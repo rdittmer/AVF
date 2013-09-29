@@ -30,6 +30,14 @@ var instagramFn = function() {
 	});
 };
 
+function authInstagram() {
+    var ref = window.open('https://api.instagram.com/oauth/authorize/?client_id=46d6705d79664b4cb1a92a6f39481309&amp;redirect_uri=http://rdittmer.github.com/AVF/week1/ios/www/index.html&amp;response_type=code', '_blank', 'location=yes');
+    ref.addEventListener('loadstart', function(event) { });
+    ref.addEventListener('loadstop', function(event) { });
+    ref.addEventListener('loaderror', function(event) { });
+    ref.addEventListener('exit', function(event) { ref.close(); });
+}
+
 function onDeviceReadyGi() {
 	console.log("readyGi");
 	$("#load-giantBomb").on("click", giantBombFn);
@@ -54,12 +62,29 @@ var giantBombFn = function() {
            console.log(data);
            $.each( data.results, function( index, info ){
                   var link   = info.site_detail_url;
-                  var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4><a href='" + link + "' data-ajax='false'>" + info.site_detail_url + "</a></li><br><br>";
+                  //link.addEventListener("click", loadClick(link), false);
+                  /*var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4><a href='#giBrowser' id='" + info.name + "'>Game Page</a></li><br><br>";
+                  $( "#outputGB" ).append( result );*/
+                  var pageButton = $( "<button>Game Page</button>" ).click(function () {
+                        var ref = window.open(link, '_blank', 'location=yes');
+                        ref.addEventListener('loadstart', function(event) { });
+                        ref.addEventListener('loadstop', function(event) { });
+                        ref.addEventListener('loaderror', function(event) { });
+                        ref.addEventListener('exit', function(event) { ref.close(); });
+                  });
+                  var result = "<img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4>";
+                  var breaks = "<br><br>";
                   $( "#outputGB" ).append( result );
+                  $( "#outputGB" ).append( pageButton );
+                  $( "#outputGB" ).append( breaks );
                   })
            }
            });
 };
+
+function loadClick(link) {
+    var ref = window.open(link, '_blank', 'location=yes');
+}
 //camera
 $( "#cameraDemo" ).on( 'pageinit', function(){
         document.addEventListener("deviceready",onDeviceReadyCam,false);            

@@ -3,7 +3,6 @@ $('#instagram').on('pageinit', function(){
 	console.log("instagram");
 	document.addEventListener("deviceready", onDeviceReadyIn, false);
                    $("#load-instagram").on( "click", onDeviceReadyIn);
-                   $("#auth-instagram").on( "click", authInstagram);
 });	
 
 $('#giantBomb').on('pageinit', function(){
@@ -73,7 +72,7 @@ var giantBombFn = function() {
                         ref.addEventListener('loaderror', function(event) { });
                         ref.addEventListener('exit', function(event) { ref.close(); });
                   });
-                  var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4></li>";
+                  var result = "<img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4>";
                   var breaks = "<br><br>";
                   $( "#outputGB" ).append( result );
                   $( "#outputGB" ).append( pageButton );
