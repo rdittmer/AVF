@@ -3,6 +3,7 @@ $('#instagram').on('pageinit', function(){
 	console.log("instagram");
 	document.addEventListener("deviceready", onDeviceReadyIn, false);
                    $("#load-instagram").on( "click", onDeviceReadyIn);
+                   $("#auth-instagram").on( "click", authInstagram);
 });	
 
 $('#giantBomb').on('pageinit', function(){
@@ -30,6 +31,14 @@ var instagramFn = function() {
 	});
 };
 
+function authInstagram() {
+    var ref = window.open('https://api.instagram.com/oauth/authorize/?client_id=46d6705d79664b4cb1a92a6f39481309&amp;redirect_uri=http://rdittmer.github.com/AVF/week1/ios/www/index.html&amp;response_type=code', '_blank', 'location=yes');
+    ref.addEventListener('loadstart', function(event) { });
+    ref.addEventListener('loadstop', function(event) { });
+    ref.addEventListener('loaderror', function(event) { });
+    ref.addEventListener('exit', function(event) { ref.close(); });
+}
+
 function onDeviceReadyGi() {
 	console.log("readyGi");
 	$("#load-giantBomb").on("click", giantBombFn);
@@ -54,9 +63,157 @@ var giantBombFn = function() {
            console.log(data);
            $.each( data.results, function( index, info ){
                   var link   = info.site_detail_url;
-                  var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4><a href='" + link + "' data-ajax='false'>" + info.site_detail_url + "</a></li><br><br>";
+                  //link.addEventListener("click", loadClick(link), false);
+                  /*var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4><a href='#giBrowser' id='" + info.name + "'>Game Page</a></li><br><br>";
+                  $( "#outputGB" ).append( result );*/
+                  var pageButton = $( "<button>Game Page</button>" ).click(function () {
+                        var ref = window.open(link, '_blank', 'location=yes');
+                        ref.addEventListener('loadstart', function(event) { });
+                        ref.addEventListener('loadstop', function(event) { });
+                        ref.addEventListener('loaderror', function(event) { });
+                        ref.addEventListener('exit', function(event) { ref.close(); });
+                  });
+                  var result = "<li><img src='" + info.image.medium_url + "' /><h4>" + info.name + "</h4></li>";
+                  var breaks = "<br><br>";
                   $( "#outputGB" ).append( result );
+                  $( "#outputGB" ).append( pageButton );
+                  $( "#outputGB" ).append( breaks );
                   })
            }
            });
 };
+
+function loadClick(link) {
+    var ref = window.open(link, '_blank', 'location=yes');
+}
+//camera
+$( "#cameraDemo" ).on( 'pageinit', function(){
+        document.addEventListener("deviceready",onDeviceReadyCam,false);            
+                      $("#load-camera").on("click", getCam);
+});
+
+var onDeviceReadyCam = function() {
+    
+};
+
+var getCam = function() {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI });
+}
+
+function onSuccess(imageURI) {
+    var myImage = document.getElementById('myImage');
+    myImage.style.display = "block";
+    myImage.src = imageURI;
+    //var camOut = "<li><img src='" + myImage.src + "'/><p>Test</p></li>";
+    //$( "#cameraOut" ).append( camOut );
+}
+
+function onFail(message) {
+    //showAlert(message);
+    alert('Failed because: ' + message);
+}
+
+function showAlert(message){
+    navigator.notification.alert("no", alertDismissed, "Alert", "OK");
+}
+
+/*var onDeviceReadyCam = function() {
+    var source = navigator.camera.PictureSourceType;
+    var destinationType = navigator.camera.DestinationType;
+};
+
+$( "#load-camera" ).on( "click", function() {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI })
+});
+
+function onSuccess(imageURI) {
+    var camPic = document.getElementById( 'pic' );
+    image.src = imageURI;
+    var camOut = "<li><img src='camPic'/></li>";
+    $( "#cameraOut" ).append( camOut );
+};
+
+function onFail(message) {
+    navigator.notification.alert( "Could not get image", alertCallback, [title], [buttonName]);
+};*/
+
+//compass
+$( "#compassDemo" ).on( 'pageinit', function(){
+                       document.addEventListener("deviceready",onDeviceReadyComp,false);
+                       });
+
+var watchID = null;
+
+function onDeviceReadyComp(){
+    startWatch();
+}
+
+function startWatch() {
+    var options = { frequency: 3000 };
+    watchID = navigator.compass.watchHeading( onSuccessComp, onErrorComp, options );
+}
+
+function stopWatch() {
+    if (watchID) {
+        navigator.compass.clearWatch(watchID);
+        watchID = null;
+    }
+}
+
+function onSuccessComp(heading) {
+    var north = document.getElementById( "north" );
+    var east  = document.getElementById( "east" );
+    var south = document.getElementById( "south" );
+    var west  = document.getElementById( "west" );
+    if (heading.magneticHeading > 316.99 || heading.magneticHeading < 45.99)
+        {
+        north.style.display = "block";
+        east.style.display  = "none";
+        south.style.display = "none";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 46.99 && heading.magneticHeading < 135.99)
+        {
+        north.style.display = "none";
+        east.style.display  = "block";
+        south.style.display = "none";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 136.99 && heading.magneticHeading < 225.99)
+        {
+        north.style.display = "none";
+        east.style.display  = "none";
+        south.style.display = "block";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 226 && heading.magneticHeading < 315)
+        {
+        north.style.display = "none";
+        east.style.display  = "none";
+        south.style.display = "none";
+        west.style.display  = "block";
+        }
+}
+
+function onErrorComp() {
+    alert( 'onError!' );
+}
+
+//inappBrowser
+$( "#browserDemo" ).on( 'pageinit', function(){
+                       document.addEventListener("deviceready", onDeviceReadyBrowse, false);
+                       });
+
+// device APIs are available
+//
+function onDeviceReadyBrowse() {
+    var ref = window.open('http://apache.org', '_blank', 'location=yes');
+    ref.addEventListener('loadstart', function(event) { alert('start: ' + event.url); });
+    ref.addEventListener('loadstop', function(event) { alert('stop: ' + event.url); });
+    ref.addEventListener('loaderror', function(event) { alert('error: ' + event.message); });
+    ref.addEventListener('exit', function(event) { alert(event.type); });
+}
+
+

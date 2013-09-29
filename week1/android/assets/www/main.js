@@ -60,3 +60,134 @@ var giantBombFn = function() {
            }
            });
 };
+//camera
+$( "#cameraDemo" ).on( 'pageinit', function(){
+        document.addEventListener("deviceready",onDeviceReadyCam,false);            
+                      $("#load-camera").on("click", getCam);
+});
+
+var onDeviceReadyCam = function() {
+    
+};
+
+var getCam = function() {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI });
+}
+
+function onSuccess(imageURI) {
+    var myImage = document.getElementById('myImage');
+    myImage.style.display = "block";
+    myImage.src = imageURI;
+    //var camOut = "<li><img src='" + myImage.src + "'/><p>Test</p></li>";
+    //$( "#cameraOut" ).append( camOut );
+}
+
+function onFail(message) {
+    //showAlert(message);
+    alert('Failed because: ' + message);
+}
+
+function showAlert(message){
+    navigator.notification.alert("no", alertDismissed, "Alert", "OK");
+}
+
+/*var onDeviceReadyCam = function() {
+    var source = navigator.camera.PictureSourceType;
+    var destinationType = navigator.camera.DestinationType;
+};
+
+$( "#load-camera" ).on( "click", function() {
+    navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI })
+});
+
+function onSuccess(imageURI) {
+    var camPic = document.getElementById( 'pic' );
+    image.src = imageURI;
+    var camOut = "<li><img src='camPic'/></li>";
+    $( "#cameraOut" ).append( camOut );
+};
+
+function onFail(message) {
+    navigator.notification.alert( "Could not get image", alertCallback, [title], [buttonName]);
+};*/
+
+//compass
+$( "#compassDemo" ).on( 'pageinit', function(){
+                       document.addEventListener("deviceready",onDeviceReadyComp,false);
+                       });
+
+var watchID = null;
+
+function onDeviceReadyComp(){
+    startWatch();
+}
+
+function startWatch() {
+    var options = { frequency: 3000 };
+    watchID = navigator.compass.watchHeading( onSuccessComp, onErrorComp, options );
+}
+
+function stopWatch() {
+    if (watchID) {
+        navigator.compass.clearWatch(watchID);
+        watchID = null;
+    }
+}
+
+function onSuccessComp(heading) {
+    var north = document.getElementById( "north" );
+    var east  = document.getElementById( "east" );
+    var south = document.getElementById( "south" );
+    var west  = document.getElementById( "west" );
+    if (heading.magneticHeading > 316.99 || heading.magneticHeading < 45.99)
+        {
+        north.style.display = "block";
+        east.style.display  = "none";
+        south.style.display = "none";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 46.99 && heading.magneticHeading < 135.99)
+        {
+        north.style.display = "none";
+        east.style.display  = "block";
+        south.style.display = "none";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 136.99 && heading.magneticHeading < 225.99)
+        {
+        north.style.display = "none";
+        east.style.display  = "none";
+        south.style.display = "block";
+        west.style.display  = "none";
+        }
+    else if (heading.magneticHeading > 226 && heading.magneticHeading < 315)
+        {
+        north.style.display = "none";
+        east.style.display  = "none";
+        south.style.display = "none";
+        west.style.display  = "block";
+        }
+}
+
+function onErrorComp() {
+    alert( 'onError!' );
+}
+
+//inappBrowser
+$( "#browserDemo" ).on( 'pageinit', function(){
+                       document.addEventListener("deviceready", onDeviceReadyBrowse, false);
+                       });
+
+// device APIs are available
+//
+function onDeviceReadyBrowse() {
+    var ref = window.open('http://apache.org', '_blank', 'location=yes');
+    ref.addEventListener('loadstart', function(event) { alert('start: ' + event.url); });
+    ref.addEventListener('loadstop', function(event) { alert('stop: ' + event.url); });
+    ref.addEventListener('loaderror', function(event) { alert('error: ' + event.message); });
+    ref.addEventListener('exit', function(event) { alert(event.type); });
+}
+
+
