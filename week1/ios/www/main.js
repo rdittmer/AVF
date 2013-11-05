@@ -19,7 +19,7 @@ function onDeviceReadyIn() {
 var instagramFn = function() {
 	//check for connection? load data?
 	console.log("clickedIn");
-	var url = "https://api.instagram.com/v1/tags/puppies/media/recent?callback=?&amp;client_id=46d6705d79664b4cb1a92a6f39481309;min_id=10";
+	var url = "https://api.instagram.com/v1/tags/yorkie/media/recent?callback=?&amp;client_id=46d6705d79664b4cb1a92a6f39481309;min_id=10";
 	$.getJSON( url, function( data ){
 		console.log( data );
               $.each(data.data, function( index, photo ){
@@ -45,7 +45,7 @@ function onDeviceReadyGi() {
 var giantBombFn = function() {
 	//check for connection? load data?
 	console.log("clickedGi");
-    searchKey = "wolfenstein";
+    searchKey = "america's army";
 	//var url = "http://www.giantbomb.com/api/search/?api_key=d44babb3fe5c4dacb012372cea1bd2e17bcd1a62&format=json&query=" + searchKey + "&resources=game";
     $.ajax({
            url: "http://api.giantbomb.com/search/",
